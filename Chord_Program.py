@@ -107,14 +107,14 @@ class Scale():
 
 
     def display_notes_sharp(self):
-        return [notes_sharp[note] for note in self.notes]
+        return ' '.join([notes_sharp[note] for note in self.notes])
 
 
     def display_notes_flat(self):
-        return [notes_flat[note] for note in self.notes]
+        return ' '.join([notes_flat[note] for note in self.notes])
 
 def test():
-    test = Scale(1, [0, 2, 4, 5, 7, 9, 11])
+    test = Scale(7, [0, 2, 4, 5, 7, 9, 11])
     assert test.notes == [7, 9, 11, 0, 2, 4, 5]
     assert test.display_notes_flat() == "E Gb Ab A B Dd D"
     assert test.display_notes_flat() == "E F# G# A B C# D"
