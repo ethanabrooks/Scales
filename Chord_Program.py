@@ -55,13 +55,6 @@ def get_type(scale_notes):
             return type
 
 
-def test():
-    randlist = [random.randint for i in range(12)]
-    assert match(randlist, randlist) == True
-    assert match([0] + randlist, [1] + randlist) == False
-    assert match(randlist + [0], randlist + [1]) == False
-
-
     class Scale():
         def __init__(self, root, notes):
             self.root = root
@@ -118,10 +111,16 @@ def test():
         def display_notes_flat(self):
             return [notes_flat[note] for note in self.notes]
 
+    def test():
+        test = Scale(7, [0, 2, 4, 5, 7, 9, 11])
+        assert test.notes == [7, 9, 11, 0, 2, 4, 5]
+        assert test.display_notes_flat() == "E Gb Ab A B Dd D"
+        assert test.display_notes_flat() == "E F# G# A B C# D"
+        randlist = [randint for i in range(12)]
+        assert match(randlist, randlist) == True
+        assert match([0] + randlist, [1] + randlist) == False
+        assert match(randlist + [0], randlist + [1]) == False
 
-    # g_minor = Scale(7, 'hmi')
-    # print(g_minor.root)
-    # print(g_minor.pattern)
 
     scale_list = list(scale_types.keys())
     random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
