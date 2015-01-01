@@ -110,12 +110,13 @@ def test():
             new_scale = Scale(new_root, mod_scale)
             return new_scale
 
-        def display_notes(self):
+
+        def display_notes_sharp(self):
+            return [notes_sharp[note] for note in self.notes]
 
 
-    test = Scale(1, [0, 2, 4, 5, 7, 9, 11])
-    x = test.get_next_scale()
-    True
+        def display_notes_flat(self):
+            return [notes_flat[note] for note in self.notes]
 
 
     # g_minor = Scale(7, 'hmi')
