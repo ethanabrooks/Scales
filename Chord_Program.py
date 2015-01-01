@@ -1,7 +1,7 @@
 from random import *
 import audioop
-from distutils.core import setup
-import tkinter
+
+
 
 __author__ = 'Ethan'
 
@@ -153,7 +153,6 @@ def test():
         next_scale = scale.get_next_scale()
         print(next_scale.notes)
         print(next_scale.display_notes_flat())
-
 
 test()
 
