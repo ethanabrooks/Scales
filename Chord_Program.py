@@ -5,9 +5,9 @@ import tkinter
 
 __author__ = 'Ethan'
 
-notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
+notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
 # <= {0: 'A', 1: 'Bb', 2: 'B', 3: 'C', 4: 'Dd', 5: 'D', 6: 'Eb', 7: 'E', 8: 'F', 9: 'Gb', 10: 'G', 11: 'Ab'}
-notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
+notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
 # <= {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
 
 scale_types = {'hex': [0, 1, 4, 5, 8, 9],
@@ -90,7 +90,7 @@ class Scale():
         return mod_scale
 
     def get_next_scale(self):
-        note_to_modify = random.randint(0, len(self.notes) - 1)
+        note_to_modify = randint(0, len(self.notes) - 1)
         mods = [self.sharp, self.flat, self.split, self.merge]
         while True:
             modification = random.choice(mods)
@@ -114,14 +114,17 @@ class Scale():
         return ' '.join([notes_flat[note] for note in self.notes])
 
 def test():
-    test = Scale(7, [0, 2, 4, 5, 7, 9, 11])
-    assert test.notes == [7, 9, 11, 0, 2, 4, 5]
-    assert test.display_notes_flat() == "E Gb Ab A B Dd D"
-    assert test.display_notes_flat() == "E F# G# A B C# D"
+    test_scale = Scale(7, [0, 2, 4, 5, 7, 9, 11])
+    assert test_scale.notes == [7, 9, 11, 0, 2, 4, 5]
+    assert test_scale.display_notes_flat() == "E Gb Ab A B Dd D"
+    assert test_scale.display_notes_sharp() == "E F# G# A B C# D"
     randlist = [randint for i in range(12)]
     assert match(randlist, randlist) == True
     assert match([0] + randlist, [1] + randlist) == False
     assert match(randlist + [0], randlist + [1]) == False
+    next_scale = test_scale.get_next_scale()
+    print(next_scale)
+    print(next_scale.display_notes_flat())
 
 test()
 
