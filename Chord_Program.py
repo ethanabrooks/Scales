@@ -1,34 +1,12 @@
-import random
+from random import *
 import audioop
 from distutils.core import setup
+import tkinter
 
 __author__ = 'Ethan'
 
-notes_sharp = {'A': 0,
-               'A#': 1,
-               'B': 2,
-               'C': 3,
-               'C#': 4,
-               'D': 5,
-               'D#': 6,
-               'E': 7,
-               'F': 8,
-               'F#': 9,
-               'G': 10,
-               'G#': 11}
-
-notes_flat = {'A': 0,
-              'Bb': 1,
-              'B': 2,
-              'C': 3,
-              'Db': 4,
-              'D': 5,
-              'Eb': 6,
-              'E': 7,
-              'F': 8,
-              'Gb': 9,
-              'G': 10,
-              'Ab': 11}
+notes_sharp = {entry[0]: entry[1] for entry in zip((range(12), "A Bb B C Dd D Eb E F Gb G Ab".split()))}
+notes_flat = {entry[0]: entry[1] for entry in zip((range(12), "A A# B C C# D D# E F F# G G#".split()))}
 
 scale_types = {'hex': [0, 1, 4, 5, 8, 9],
                'oct': [0, 1, 3, 4, 6, 7, 9, 10],
@@ -131,6 +109,8 @@ def test():
             new_root = random.choice(mod_scale)
             new_scale = Scale(new_root, mod_scale)
             return new_scale
+
+        def display_notes(self):
 
 
     test = Scale(1, [0, 2, 4, 5, 7, 9, 11])
