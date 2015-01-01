@@ -5,8 +5,10 @@ import tkinter
 
 __author__ = 'Ethan'
 
-notes_sharp = {entry[0]: entry[1] for entry in zip((range(12), "A Bb B C Dd D Eb E F Gb G Ab".split()))}
-notes_flat = {entry[0]: entry[1] for entry in zip((range(12), "A A# B C C# D D# E F F# G G#".split()))}
+notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
+# <= {0: 'A', 1: 'Bb', 2: 'B', 3: 'C', 4: 'Dd', 5: 'D', 6: 'Eb', 7: 'E', 8: 'F', 9: 'Gb', 10: 'G', 11: 'Ab'}
+notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
+# <= {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
 
 scale_types = {'hex': [0, 1, 4, 5, 8, 9],
                'oct': [0, 1, 3, 4, 6, 7, 9, 10],
@@ -122,8 +124,6 @@ def get_type(scale_notes):
         assert match(randlist + [0], randlist + [1]) == False
 
 
-    scale_list = list(scale_types.keys())
-    random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
-    random_scale.get_next_scale()
-
-    print(random_scale.pattern)
+    # scale_list = list(scale_types.keys())
+    # random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
+    # random_scale.get_next_scale()
