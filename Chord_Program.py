@@ -47,7 +47,7 @@ def duplicates(list):
 
 def jumps(list):
     adjacents = zip(list, list[1:])
-    intervals = [entry[1] - entry[0] for entry in adjacents] + [list[0] - list[-1] % 12]
+    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
     return any([(entry[1] - entry[0]) % 12 <= 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 <= 3
 
 
@@ -100,7 +100,7 @@ class Scale():
         return mod_scale
 
     def merge(self, note_index):
-        mod_scale = self.flat(note_index + 1)
+        mod_scale = self.flat((note_index + 1) % len(self.notes))
         mod_scale.remove(mod_scale[note_index])
         return mod_scale
 
