@@ -1,0 +1,155 @@
+import random
+import audioop
+from distutils.core import setup
+
+__author__ = 'Ethan'
+
+notes_sharp = {'A': 0,
+               'A#': 1,
+               'B': 2,
+               'C': 3,
+               'C#': 4,
+               'D': 5,
+               'D#': 6,
+               'E': 7,
+               'F': 8,
+               'F#': 9,
+               'G': 10,
+               'G#': 11}
+
+notes_flat = {'A': 0,
+              'Bb': 1,
+              'B': 2,
+              'C': 3,
+              'Db': 4,
+              'D': 5,
+              'Eb': 6,
+              'E': 7,
+              'F': 8,
+              'Gb': 9,
+              'G': 10,
+              'Ab': 11}
+
+scale_types = {'hex': [0, 1, 4, 5, 8, 9],
+               'oct': [0, 1, 3, 4, 6, 7, 9, 10],
+               'wt': [0, 2, 4, 6, 8, 10],
+               'hmi': [0, 2, 3, 5, 7, 8, 11],
+               'hma': [0, 2, 4, 5, 7, 8, 11],
+               'ac': [0, 2, 4, 6, 7, 9, 10],
+               'dia': [0, 2, 4, 5, 7, 9, 11]}
+
+
+def match(list1, list2):
+    return all([entry[0] == entry[1] for entry in zip(list1, list2)])
+
+
+def compare(list1, list2):
+    """
+    Identifies integers in one list that are not in the other and vice versa.
+    :param list1: [integers] -- probably notes
+    :param list2: [integers] -- probably notes
+    :return: 2-tuple of lists of numbers that list1 possesses that list2 does not possess and vice versa, respectively.
+    """
+    not_in_list1 = list2
+    not_in_list2 = []
+    for integer in list1:
+        if integer in list2:
+            not_in_list1.remove(integer)
+        else:
+            not_in_list2.append(integer)
+    return (not_in_list2, not_in_list1)
+
+
+def duplicates(list):
+    adjacents = zip(list, list[1:])
+    return any([entry[0] == entry[1] for entry in adjacents]) or list[0] == list[-1]
+
+
+def jumps(list):
+    adjacents = zip(list, list[1:])
+    intervals = [entry[1] - entry[0] for entry in adjacents] + [list[0] - list[-1] % 12]
+    return any([(entry[1] - entry[0]) % 12 <= 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 <= 3
+
+
+def get_type(scale_notes):
+    for type in scale_types:
+        if match(scale_notes, type):
+            return type
+
+
+def test():
+    randlist = [random.randint for i in range(12)]
+    assert match(randlist, randlist) == True
+    assert match([0] + randlist, [1] + randlist) == False
+    assert match(randlist + [0], randlist + [1]) == False
+
+
+    class Scale():
+        def __init__(self, root, notes):
+            self.root = root
+            self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
+            self.type = get_type(notes)
+
+
+        def test(self):
+            assert not duplicates(self.notes)
+            assert not jumps(self.notes)
+
+
+        def sharp(self, note_index):
+            mod_scale = [note for note in self.notes]
+            mod_scale[note_index] = self.notes[note_index] + 1
+            return mod_scale
+
+        def flat(self, note_index):
+            mod_scale = [note for note in self.notes]
+            mod_scale[note_index] = self.notes[note_index] - 1
+            return mod_scale
+
+        def split(self, note_index):
+            mod_scale = self.sharp(note_index)
+            mod_scale.insert(note_index, self.notes[note_index] - 1)
+            return mod_scale
+
+        def merge(self, note_index):
+            mod_scale = self.flat(note_index + 1)
+            mod_scale.remove(mod_scale[note_index])
+            return mod_scale
+
+        def get_next_scale(self):
+            note_to_modify = random.randint(0, len(self.notes) - 1)
+            mods = [self.sharp, self.flat, self.split, self.merge]
+            while True:
+                modification = random.choice(mods)
+                mod_scale = [note % 12 for note in modification(note_to_modify)]
+                if not (duplicates(mod_scale) or jumps(mod_scale)):
+                    break
+                if mods:
+                    mods.remove(modification)
+                else:
+                    mods = [self.sharp, self.flat, self.split, self.merge]
+            new_root = random.choice(mod_scale)
+            new_scale = Scale(new_root, mod_scale)
+            return new_scale
+
+
+    test = Scale(1, [0, 2, 4, 5, 7, 9, 11])
+    x = test.get_next_scale()
+    True
+
+
+    # g_minor = Scale(7, 'hmi')
+    # print(g_minor.root)
+    # print(g_minor.pattern)
+
+    scale_list = list(scale_types.keys())
+    random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
+    random_scale.get_next_scale()
+
+    print(random_scale.pattern)
+
+    setup(name='Chord_Program',
+          version='1.0',
+          description="Dad's crazy chord project.",
+          author="Ethan",
+    )
