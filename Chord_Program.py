@@ -131,16 +131,24 @@ class Scale():
 
 def test():
     test_scale = Scale(7, [0, 2, 4, 5, 7, 9, 11])
-    assert test_scale.notes == [7, 9, 11, 0, 2, 4, 5]
-    assert test_scale.display_notes_flat() == "E Gb Ab A B Dd D"
-    assert test_scale.display_notes_sharp() == "E F# G# A B C# D"
-    randlist = [randint for i in range(12)]
-    assert match(randlist, randlist) == True
-    assert match([0] + randlist, [1] + randlist) == False
-    assert match(randlist + [0], randlist + [1]) == False
-    next_scale = test_scale.get_next_scale()
-    print(next_scale)
-    print(next_scale.display_notes_flat())
+    test_scales = [test_scale]
+    NUM = 10
+    for num in range(NUM):
+        scale = Scale(test_scales[-1])
+        for rep in range(randint(0, 10)):
+            scale = scale.get_next_scale()
+        test_scales.append(scale)
+    for scale in test_scales:
+        assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
+        assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
+        assert scale.display_notes_sharp() == "E F# G# A B C# D"
+        randlist = [randint for i in range(12)]
+        assert match(randlist, randlist) == True
+        assert match([0] + randlist, [1] + randlist) == False
+        assert match(randlist + [0], randlist + [1]) == False
+        next_scale = scale.get_next_scale()
+        print(next_scale.notes)
+        print(next_scale.display_notes_flat())
 
 
 test()
