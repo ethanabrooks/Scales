@@ -70,10 +70,9 @@ class Scale():
         self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
         self.type = get_type(notes)
 
-    def __init__(self, Scale):
-        self.root = Scale.root
-        self.notes = Scale.notes
-        self.type = Scale.type
+    def copy(self):
+        return Scale(self.root, self.notes)
+
 
     def test(self):
         """
@@ -119,7 +118,7 @@ class Scale():
                 break
             if mods:
                 mods.remove(modification)
-            else:
+            if not mods:
                 mods = [self.sharp, self.flat, self.split, self.merge]
         new_root = choice(mod_scale)
         new_scale = Scale(new_root, mod_scale)
@@ -135,11 +134,11 @@ class Scale():
 
 
 def test():
-    test_scale = Scale(7, [0, 2, 4, 5, 7, 9, 11])
+    test_scale = Scale(root=7, notes=[0, 2, 4, 5, 7, 9, 11])
     test_scales = [test_scale]
-    NUM = 10
-    for num in range(NUM):
-        scale = Scale(test_scales[-1])
+    NUM_TO_ADD = 10
+    for num in range(NUM_TO_ADD):
+        scale = test_scales[-1].copy()
         for rep in range(randint(0, 10)):
             scale = scale.get_next_scale()
         test_scales.append(scale)
