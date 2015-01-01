@@ -70,6 +70,11 @@ class Scale():
         self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
         self.type = get_type(notes)
 
+    def __init__(self, Scale):
+        self.root = Scale.root
+        self.notes = Scale.notes
+        self.type = Scale.type
+
     def test(self):
         """
 
