@@ -48,7 +48,7 @@ def duplicates(list):
 def jumps(list):
     adjacents = zip(list, list[1:])
     intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
-    return any([(entry[1] - entry[0]) % 12 <= 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 <= 3
+    return any([(entry[1] - entry[0]) % 12 > 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 > 3
 
 
 def meets_specs(list):
@@ -116,7 +116,7 @@ class Scale():
                 mods.remove(modification)
             else:
                 mods = [self.sharp, self.flat, self.split, self.merge]
-        new_root = random.choice(mod_scale)
+        new_root = choice(mod_scale)
         new_scale = Scale(new_root, mod_scale)
         return new_scale
 
