@@ -57,72 +57,73 @@ def get_type(scale_notes):
             return type
 
 
-    class Scale():
-        def __init__(self, root, notes):
-            self.root = root
-            self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
-            self.type = get_type(notes)
+class Scale():
+    def __init__(self, root, notes):
+        self.root = root
+        self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
+        self.type = get_type(notes)
 
 
-        def test(self):
-            assert not duplicates(self.notes)
-            assert not jumps(self.notes)
+    def test(self):
+        assert not duplicates(self.notes)
+        assert not jumps(self.notes)
 
 
-        def sharp(self, note_index):
-            mod_scale = [note for note in self.notes]
-            mod_scale[note_index] = self.notes[note_index] + 1
-            return mod_scale
+    def sharp(self, note_index):
+        mod_scale = [note for note in self.notes]
+        mod_scale[note_index] = self.notes[note_index] + 1
+        return mod_scale
 
-        def flat(self, note_index):
-            mod_scale = [note for note in self.notes]
-            mod_scale[note_index] = self.notes[note_index] - 1
-            return mod_scale
+    def flat(self, note_index):
+        mod_scale = [note for note in self.notes]
+        mod_scale[note_index] = self.notes[note_index] - 1
+        return mod_scale
 
-        def split(self, note_index):
-            mod_scale = self.sharp(note_index)
-            mod_scale.insert(note_index, self.notes[note_index] - 1)
-            return mod_scale
+    def split(self, note_index):
+        mod_scale = self.sharp(note_index)
+        mod_scale.insert(note_index, self.notes[note_index] - 1)
+        return mod_scale
 
-        def merge(self, note_index):
-            mod_scale = self.flat(note_index + 1)
-            mod_scale.remove(mod_scale[note_index])
-            return mod_scale
+    def merge(self, note_index):
+        mod_scale = self.flat(note_index + 1)
+        mod_scale.remove(mod_scale[note_index])
+        return mod_scale
 
-        def get_next_scale(self):
-            note_to_modify = random.randint(0, len(self.notes) - 1)
-            mods = [self.sharp, self.flat, self.split, self.merge]
-            while True:
-                modification = random.choice(mods)
-                mod_scale = [note % 12 for note in modification(note_to_modify)]
-                if not (duplicates(mod_scale) or jumps(mod_scale)):
-                    break
-                if mods:
-                    mods.remove(modification)
-                else:
-                    mods = [self.sharp, self.flat, self.split, self.merge]
-            new_root = random.choice(mod_scale)
-            new_scale = Scale(new_root, mod_scale)
-            return new_scale
-
-
-        def display_notes_sharp(self):
-            return [notes_sharp[note] for note in self.notes]
+    def get_next_scale(self):
+        note_to_modify = random.randint(0, len(self.notes) - 1)
+        mods = [self.sharp, self.flat, self.split, self.merge]
+        while True:
+            modification = random.choice(mods)
+            mod_scale = [note % 12 for note in modification(note_to_modify)]
+            if not (duplicates(mod_scale) or jumps(mod_scale)):
+                break
+            if mods:
+                mods.remove(modification)
+            else:
+                mods = [self.sharp, self.flat, self.split, self.merge]
+        new_root = random.choice(mod_scale)
+        new_scale = Scale(new_root, mod_scale)
+        return new_scale
 
 
-        def display_notes_flat(self):
-            return [notes_flat[note] for note in self.notes]
+    def display_notes_sharp(self):
+        return [notes_sharp[note] for note in self.notes]
 
-    def test():
-        test = Scale(7, [0, 2, 4, 5, 7, 9, 11])
-        assert test.notes == [7, 9, 11, 0, 2, 4, 5]
-        assert test.display_notes_flat() == "E Gb Ab A B Dd D"
-        assert test.display_notes_flat() == "E F# G# A B C# D"
-        randlist = [randint for i in range(12)]
-        assert match(randlist, randlist) == True
-        assert match([0] + randlist, [1] + randlist) == False
-        assert match(randlist + [0], randlist + [1]) == False
 
+    def display_notes_flat(self):
+        return [notes_flat[note] for note in self.notes]
+
+def test():
+    test = Scale(1, [0, 2, 4, 5, 7, 9, 11])
+    assert test.notes == [7, 9, 11, 0, 2, 4, 5]
+    assert test.display_notes_flat() == "E Gb Ab A B Dd D"
+    assert test.display_notes_flat() == "E F# G# A B C# D"
+    randlist = [randint for i in range(12)]
+    assert match(randlist, randlist) == True
+    assert match([0] + randlist, [1] + randlist) == False
+    assert match(randlist + [0], randlist + [1]) == False
+
+test()
 
     # scale_list = list(scale_types.keys())
     # random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
