@@ -51,6 +51,13 @@ def jumps(list):
     return any([(entry[1] - entry[0]) % 12 <= 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 <= 3
 
 
+def meets_specs(list):
+    if not duplicates(list):
+        if not jumps(list):
+            return True
+    return False
+
+
 def get_type(scale_notes):
     for type in scale_types:
         if match(scale_notes, type):
@@ -63,13 +70,21 @@ class Scale():
         self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
         self.type = get_type(notes)
 
-
     def test(self):
+        """
+
+        :return:
+        """
         assert not duplicates(self.notes)
         assert not jumps(self.notes)
 
 
     def sharp(self, note_index):
+        """
+
+        :param note_index:
+        :return:
+        """
         mod_scale = [note for note in self.notes]
         mod_scale[note_index] = self.notes[note_index] + 1
         return mod_scale
@@ -93,9 +108,9 @@ class Scale():
         note_to_modify = randint(0, len(self.notes) - 1)
         mods = [self.sharp, self.flat, self.split, self.merge]
         while True:
-            modification = random.choice(mods)
+            modification = choice(mods)
             mod_scale = [note % 12 for note in modification(note_to_modify)]
-            if not (duplicates(mod_scale) or jumps(mod_scale)):
+            if meets_specs(mod_scale):
                 break
             if mods:
                 mods.remove(modification)
@@ -113,6 +128,7 @@ class Scale():
     def display_notes_flat(self):
         return ' '.join([notes_flat[note] for note in self.notes])
 
+
 def test():
     test_scale = Scale(7, [0, 2, 4, 5, 7, 9, 11])
     assert test_scale.notes == [7, 9, 11, 0, 2, 4, 5]
@@ -126,8 +142,9 @@ def test():
     print(next_scale)
     print(next_scale.display_notes_flat())
 
+
 test()
 
-    # scale_list = list(scale_types.keys())
-    # random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
-    # random_scale.get_next_scale()
+# scale_list = list(scale_types.keys())
+# random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
+# random_scale.get_next_scale()
