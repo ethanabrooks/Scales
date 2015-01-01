@@ -147,9 +147,3 @@ def test():
     random_scale.get_next_scale()
 
     print(random_scale.pattern)
-
-    setup(name='Chord_Program',
-          version='1.0',
-          description="Dad's crazy chord project.",
-          author="Ethan",
-    )
