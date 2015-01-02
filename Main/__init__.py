@@ -9,18 +9,19 @@ notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E
 notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
 # <= {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
 
-scale_pairs = [i for i in zip((
-                   [0, 2, 4, 5, 7, 9, 11],
-                   [0, 1, 4, 5, 8, 9],
-                   [0, 1, 3, 4, 6, 7, 9, 10],
-                   [0, 2, 4, 6, 8, 10],
-                   [0, 2, 3, 5, 7, 8, 11],
-                   [0, 2, 4, 5, 7, 8, 11],
-                   [0, 2, 4, 6, 7, 9, 10],
-                   [0, 2, 4, 5, 7, 9, 11]
-                   ),
-                   'oct wt hmi hma ac dia'.split())]
-# scale_types = {entry[0]: entry[1] for entry in scale_pairs}#{entry[0]: entry[1] for entry in scale_pairs}
+
+named_scales = (
+    [0, 2, 4, 5, 7, 9, 11],
+    [0, 1, 4, 5, 8, 9],
+    [0, 1, 3, 4, 6, 7, 9, 10],
+    [0, 2, 4, 6, 8, 10],
+    [0, 2, 3, 5, 7, 8, 11],
+    [0, 2, 4, 5, 7, 8, 11],
+    [0, 2, 4, 6, 7, 9, 10],
+    [0, 2, 4, 5, 7, 9, 11]
+)
+
+scale_namer = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split(), named_scales)}
 
 
 def match(list1, list2):
@@ -63,7 +64,7 @@ def meets_specs(list):
 
 
 def get_type(scale_notes):
-    for type in scale_types:
+    for type in scale_namer:
         if match(scale_notes, type):
             return type
 
@@ -149,25 +150,24 @@ def test():
     for scale in test_scales:
         assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
         assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
-        assert scale.display_notes_sharp() == "E F# G# A B C# D"
-        randlist = [randint for i in range(12)]
-        assert match(randlist, randlist) == True
-        assert match([0] + randlist, [1] + randlist) == False
-        assert match(randlist + [0], randlist + [1]) == False
-        next_scale = scale.get_next_scale()
-        print(next_scale.notes)
-        print(next_scale.display_notes_flat())
+        # assert scale.display_notes_sharp() == "E F# G# A B C# D"
+        # randlist = [randint for i in range(12)]
+        # assert match(randlist, randlist) == True
+        # assert match([0] + randlist, [1] + randlist) == False
+        # assert match(randlist + [0], randlist + [1]) == False
+        # next_scale = scale.get_next_scale()
+        # print(next_scale.notes)
+        # print(next_scale.display_notes_flat())
 
 
-test()
-
-current_type = choice(scale_pairs[0])
-current_notes = [(note+randint(0, 12)) % 12 for note in current_type]
+current_type = choice(named_scales)
+current_notes = [(note + randint(0, 12)) % 12 for note in current_type]
 current_scale = [Scale(current_notes[0], current_notes)]
+
 
 def next_scale():
     current_scale.append(current_scale[0].get_next_scale())
-    del(current_scale[0])
+    del current_scale[0]
     return current_scale[0]
 
-print(next_scale())
+print((next_scale()).display_notes_flat())
