@@ -1,13 +1,13 @@
 __author__ = 'Ethan'
 from tkinter import *
 from tkinter import ttk
-import Main
+from Main import current_scale
 
 def next_scale(*args):
-    Main.current_scale.append(Main.current_scale[0].get_next_scale())
-    del Main.current_scale[0]
-    scale_flat.set(Main.current_scale[0].display_notes_flat())
-    scale_sharp.set(Main.current_scale[0].display_notes_sharp())
+    current_scale.append(current_scale[0].get_next_scale())
+    del current_scale[0]
+    scale_flat.set(current_scale[0].display_notes_flat())
+    scale_sharp.set(current_scale[0].display_notes_sharp())
 
 
 root = Tk()
@@ -18,7 +18,6 @@ mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
-feet = StringVar()
 scale_flat = StringVar()
 scale_sharp = StringVar()
 

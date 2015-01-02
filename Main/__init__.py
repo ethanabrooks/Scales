@@ -1,6 +1,5 @@
 __author__ = 'Ethan'
 from random import *
-import audioop
 
 __author__ = 'Ethan'
 
@@ -98,7 +97,9 @@ class Scale():
     def __init__(self, root, notes):
         self.root = root
         self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
-        # self.type = get_type(notes)
+        self.type = get_type(notes)
+        self.intervals = intervals(self.notes)
+        assert meets_specs(self.notes)
 
     def copy(self):
         return Scale(self.root, self.notes)
@@ -134,10 +135,10 @@ class Scale():
         mods = [self.sharp, self.flat, self.split, self.merge]
         while True:
             modification = choice(mods)
-            mod_scale = [note % 12 for note in modification(note_to_modify)]
-
+            mod_scale = remove_duplicates([note % 12 for note in modification(note_to_modify)])
             if meets_specs(mod_scale):
                 break
+            ints = intervals(mod_scale)
             if mods:
                 mods.remove(modification)
             if not mods:
@@ -179,7 +180,15 @@ def test():
 
 test()
 
-current_type = choice(named_scales)
-current_notes = [(note + randint(0, 12)) % 12 for note in current_type]
-current_scale = [Scale(current_notes[0], current_notes)]
+def initialize():
+    current_type = choice(named_scales)
+    random_number = randint(0, 12)
+    current_notes = [(note + random_number) % 12 for note in current_type]
+    ints = intervals(current_notes)
+    return [Scale(current_notes[0], current_notes)]
+
+current_scale = initialize()
+current_scale[0].get_next_scale()
+
+# initialize()
 
