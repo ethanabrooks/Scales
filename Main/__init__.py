@@ -144,6 +144,8 @@ class Scale():
             if not mods:
                 mods = [self.sharp, self.flat, self.split, self.merge]
                 note_to_modify = randint(0, len(self.notes) - 1)
+        ints = intervals(mod_scale)
+        assert meets_specs(mod_scale)
         new_root = choice(mod_scale)
         new_scale = Scale(new_root, mod_scale)
         return new_scale
@@ -185,6 +187,7 @@ def initialize():
     random_number = randint(0, 12)
     current_notes = [(note + random_number) % 12 for note in current_type]
     ints = intervals(current_notes)
+    assert meets_specs(current_notes)
     return [Scale(current_notes[0], current_notes)]
 
 current_scale = initialize()
