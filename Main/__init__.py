@@ -58,7 +58,6 @@ def remove_duplicates(list):
     return one_each
 
 
-
 def intervals(list):
     adjacents = zip(list, list[1:])
     return [(entry[1] - entry[0]) % 12 for entry in adjacents] + [(list[0] - list[-1]) % 12]
@@ -96,7 +95,8 @@ def get_type(scale_notes):
 class Scale():
     def __init__(self, root, notes):
         self.root = root
-        self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
+        self.notes = [root] + sorted([note for note in notes if note > root]) + sorted(
+            [note for note in notes if note < root])
         self.type = get_type(notes)
         self.intervals = intervals(self.notes)
         assert meets_specs(self.notes)
@@ -182,6 +182,7 @@ def test():
 
 test()
 
+
 def initialize():
     current_type = choice(named_scales)
     random_number = randint(0, 12)
@@ -189,6 +190,7 @@ def initialize():
     ints = intervals(current_notes)
     assert meets_specs(current_notes)
     return [Scale(current_notes[0], current_notes)]
+
 
 current_scale = initialize()
 current_scale[0].get_next_scale()
