@@ -27,8 +27,10 @@ scale_namer = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split
 def match(list1, list2):
     return all([entry[0] == entry[1] for entry in zip(list1, list2)])
 
-def
-
+def trizip(list1, list2, list3):
+    if not (list1 and list2 and list3):
+        return []
+    return [(list1[0], list2[0], list3[0])]+trizip(list1[1:], list2[1:], list3[1:])
 
 def compare(list1, list2):
     """
