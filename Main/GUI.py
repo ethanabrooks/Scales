@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk
 import Main
 
-def next_scale():
+def next_scale(*args):
     Main.current_scale.append(Main.current_scale[0].get_next_scale())
     del Main.current_scale[0]
     scale_flat.set(Main.current_scale[0].display_notes_flat())
@@ -30,6 +30,6 @@ ttk.Label(mainframe, textvariable=scale_sharp).grid(column=0, row=2, sticky=(W, 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
-# root.bind('<Return>', Main.next_scale)
+root.bind('<Return>', next_scale)
 
 root.mainloop()
