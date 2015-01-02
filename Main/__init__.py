@@ -59,10 +59,12 @@ def jumps(list):
     intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
     return any([(entry[1] - entry[0]) % 12 > 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 > 3
 
-def augmented_2nd_specs(list):
+def aug_2nd_specs(list):
     adjacents = zip(list, list[1:])
     intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
-    return any([(entry[1] - entry[0]) % 12 > 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 > 3
+    triplets = trizip(intervals, intervals[1:], intervals[2:])
+    aug_2nds = [tri for tri in triplets if tri[1] == 3]
+    return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
 
 def meets_specs(list):
     if not duplicates(list):
