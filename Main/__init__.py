@@ -68,7 +68,8 @@ def jumps(list):
 
 
 def aug_2nd_specs(list):
-    triplets = trizip(intervals([list[-1]]+list), intervals(list)[1:], intervals(list)[2:]+[list[0]])
+    ints = intervals(list)
+    triplets = trizip(ints + [list[-1]], ints[1:], ints[2:]+[list[0]])
     aug_2nds = [tri for tri in triplets if tri[1] == 3]
     return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
 
