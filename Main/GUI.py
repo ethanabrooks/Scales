@@ -3,10 +3,6 @@ from tkinter import *
 from tkinter import ttk
 import Main
 
-def next_scale():
-    Main.current_scale = Main.current_scale.get_next_scale()
-    return Main.current_scale
-
 
 root = Tk()
 root.title("Feet to Meters")
@@ -20,13 +16,13 @@ feet = StringVar()
 meters = StringVar()
 
 ttk.Label(mainframe, textvariable=meters).grid(column=0, row=1, sticky=(W, E))
-ttk.Button(mainframe, text="Next Scale", command=next_scale).grid(column=0, row=0, sticky=W)
+ttk.Button(mainframe, text="Next Scale", command=Main.next_scale()).grid(column=0, row=0, sticky=W)
 
-ttk.Label(mainframe, text="Scale notes").grid(column=0, row=1, sticky=N)
+ttk.Label(mainframe, text=Main.current_scale[0].display_notes_flat()).grid(column=0, row=1, sticky=N)
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
-root.bind('<Return>', next_scale)
+root.bind('<Return>', Main.next_scale)
 
 root.mainloop()
