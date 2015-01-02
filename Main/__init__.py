@@ -77,9 +77,10 @@ def min_2nd_specs(list):
 
 
 def meets_specs(list):
-    if not duplicates(list):
-        if not jumps(list):
-            return True
+    if not jumps(list):
+        if aug_2nd_specs(list):
+            if min_2nd_specs(list):
+                return True
     return False
 
 
@@ -139,9 +140,9 @@ class Scale():
         while True:
             modification = choice(mods)
             mod_scale = [note % 12 for note in modification(note_to_modify)]
-            break
-            # if meets_specs(mod_scale):
-            # break
+
+            if meets_specs(mod_scale):
+                break
             if mods:
                 mods.remove(modification)
             if not mods:
