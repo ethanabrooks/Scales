@@ -75,8 +75,9 @@ def aug_2nd_specs(list):
 
 
 def min_2nd_specs(list):
-    adjacent_intervals = [i for i in zip(intervals(list), intervals(list)[1:])]
-    return not any([interval[0] == 1 for interval in adjacent_intervals if interval[1] == 1])
+    ints = intervals(list)
+    adjacent_intervals = [i for i in zip(ints, ints[1:]+[ints[0]])]
+    return all(entry != (1, 1) for entry in adjacent_intervals)
 
 
 def meets_specs(list):
@@ -181,6 +182,8 @@ def test():
     assert min_2nd_specs([0, 1, 9, 10]) == True
     ints = intervals([0, 1, 9, 10, 11])
     assert min_2nd_specs([0, 1, 9, 10, 11]) == False
+    ints = intervals([2, 3, 4, 7, 8, 10, 11])
+    assert min_2nd_specs([2, 3, 4, 7, 8, 10, 11]) == False
     randlist = [randint for i in range(12)]
     assert match(randlist, randlist) == True
     assert match([0] + randlist, [1] + randlist) == False
