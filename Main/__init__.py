@@ -51,9 +51,13 @@ def compare(list1, list2):
     return not_in_list2, not_in_list1
 
 
-def duplicates(list):
-    adjacents = zip(list, list[1:])
-    return any([entry[0] == entry[1] for entry in adjacents]) or list[0] == list[-1]
+def remove_duplicates(list):
+    one_each = []
+    for entry in list:
+        if entry not in one_each:
+            one_each.append(entry)
+    return one_each
+
 
 
 def intervals(list):
