@@ -1,6 +1,6 @@
+__author__ = 'Ethan'
 from random import *
 import audioop
-
 
 __author__ = 'Ethan'
 
@@ -9,8 +9,7 @@ notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E
 notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
 # <= {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
 
-scale_types = {entry[0]: entry[1] for entry in
-               zip((
+scale_pairs = [i for i in zip((
                    [0, 2, 4, 5, 7, 9, 11],
                    [0, 1, 4, 5, 8, 9],
                    [0, 1, 3, 4, 6, 7, 9, 10],
@@ -20,7 +19,8 @@ scale_types = {entry[0]: entry[1] for entry in
                    [0, 2, 4, 6, 7, 9, 10],
                    [0, 2, 4, 5, 7, 9, 11]
                    ),
-                   'oct wt hmi hma ac dia'.split())}
+                   'oct wt hmi hma ac dia'.split())]
+# scale_types = {entry[0]: entry[1] for entry in scale_pairs}#{entry[0]: entry[1] for entry in scale_pairs}
 
 
 def match(list1, list2):
@@ -72,7 +72,7 @@ class Scale():
     def __init__(self, root, notes):
         self.root = root
         self.notes = [root] + [note for note in notes if note > root] + [note for note in notes if note < root]
-        self.type = get_type(notes)
+        # self.type = get_type(notes)
 
     def copy(self):
         return Scale(self.root, self.notes)
@@ -161,6 +161,13 @@ def test():
 
 test()
 
-current_type = choice(scale_types)
+current_type = choice(scale_pairs[0])
 current_notes = [(note+randint(0, 12)) % 12 for note in current_type]
-current_scale = Scale(current_notes[0],current_notes)
+current_scale = [Scale(current_notes[0], current_notes)]
+
+def next_scale():
+    current_scale.append(current_scale[0].get_next_scale())
+    del(current_scale[0])
+    return current_scale[0]
+
+print(next_scale())

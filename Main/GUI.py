@@ -1,11 +1,11 @@
 __author__ = 'Ethan'
 from tkinter import *
 from tkinter import ttk
+import Main
 
-
-def next_scale(*args):
-    current_scale = current_scale.g
-    return current_scale
+def next_scale():
+    Main.current_scale = Main.current_scale.get_next_scale()
+    return Main.current_scale
 
 
 root = Tk()
