@@ -27,6 +27,8 @@ scale_namer = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split
 def match(list1, list2):
     return all([entry[0] == entry[1] for entry in zip(list1, list2)])
 
+def
+
 
 def compare(list1, list2):
     """
@@ -55,6 +57,10 @@ def jumps(list):
     intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
     return any([(entry[1] - entry[0]) % 12 > 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 > 3
 
+def augmented_2nd_specs(list):
+    adjacents = zip(list, list[1:])
+    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
+    return any([(entry[1] - entry[0]) % 12 > 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 > 3
 
 def meets_specs(list):
     if not duplicates(list):
@@ -125,6 +131,7 @@ class Scale():
                 mods.remove(modification)
             if not mods:
                 mods = [self.sharp, self.flat, self.split, self.merge]
+                note_to_modify = randint(0, len(self.notes) - 1)
         new_root = choice(mod_scale)
         new_scale = Scale(new_root, mod_scale)
         return new_scale
@@ -150,19 +157,19 @@ def test():
     for scale in test_scales:
         assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
         assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
-        # assert scale.display_notes_sharp() == "E F# G# A B C# D"
-        # randlist = [randint for i in range(12)]
-        # assert match(randlist, randlist) == True
-        # assert match([0] + randlist, [1] + randlist) == False
-        # assert match(randlist + [0], randlist + [1]) == False
-        # next_scale = scale.get_next_scale()
-        # print(next_scale.notes)
-        # print(next_scale.display_notes_flat())
+        assert scale.display_notes_sharp() == "E F# G# A B C# D"
+        randlist = [randint for i in range(12)]
+        assert match(randlist, randlist) == True
+        assert match([0] + randlist, [1] + randlist) == False
+        assert match(randlist + [0], randlist + [1]) == False
+        next_scale = scale.get_next_scale()
+        print(next_scale.notes)
+        print(next_scale.display_notes_flat())
+
+test()
 
 
 current_type = choice(named_scales)
 current_notes = [(note + randint(0, 12)) % 12 for note in current_type]
 current_scale = [Scale(current_notes[0], current_notes)]
 
-
-print((next_scale()).display_notes_flat())
