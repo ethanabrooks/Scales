@@ -56,12 +56,12 @@ def duplicates(list):
 
 def jumps(list):
     adjacents = zip(list, list[1:])
-    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
+    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [(list[0] - list[-1]) % 12]
     return any([(entry[1] - entry[0]) % 12 > 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 > 3
 
 def aug_2nd_specs(list):
     adjacents = zip(list, list[1:])
-    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [list[0] - list[-1] % 12]
+    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [(list[0] - list[-1]) % 12]
     triplets = trizip(intervals, intervals[1:], intervals[2:])
     aug_2nds = [tri for tri in triplets if tri[1] == 3]
     return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
@@ -129,8 +129,9 @@ class Scale():
         while True:
             modification = choice(mods)
             mod_scale = [note % 12 for note in modification(note_to_modify)]
-            if meets_specs(mod_scale):
-                break
+            break
+            # if meets_specs(mod_scale):
+            #     break
             if mods:
                 mods.remove(modification)
             if not mods:
@@ -163,7 +164,7 @@ def test():
     assert aug_2nd_specs([0, 1, 3, 4, 7, 8, 9]) == True
     assert aug_2nd_specs([0, 1, 4, 7, 8, 9]) == False
     assert aug_2nd_specs([0, 3, 4, 7, 8, 11]) == True
-    assert aug_2nd_specs([0, 1, 4, 5, 8, 9]) == False
+    assert aug_2nd_specs([0, 1, 4, 5, 8]) == False
 
     print(next_scale.notes)
     print(next_scale.display_notes_flat())

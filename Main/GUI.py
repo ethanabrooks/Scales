@@ -6,7 +6,8 @@ import Main
 def next_scale():
     Main.current_scale.append(Main.current_scale[0].get_next_scale())
     del Main.current_scale[0]
-    current_scale.set(Main.current_scale[0])
+    scale_flat.set(Main.current_scale[0].display_notes_flat())
+    scale_sharp.set(Main.current_scale[0].display_notes_sharp())
 
 
 root = Tk()
@@ -18,10 +19,12 @@ mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 feet = StringVar()
-current_scale = StringVar()
+scale_flat = StringVar()
+scale_sharp = StringVar()
 
-ttk.Label(mainframe, textvariable=current_scale).grid(column=0, row=1, sticky=(W, E))
 ttk.Button(mainframe, text="Next Scale", command=next_scale).grid(column=0, row=0, sticky=W)
+ttk.Label(mainframe, textvariable=scale_flat).grid(column=0, row=1, sticky=(W, E))
+ttk.Label(mainframe, textvariable=scale_sharp).grid(column=0, row=2, sticky=(W, E))
 
 
 for child in mainframe.winfo_children():
