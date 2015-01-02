@@ -70,9 +70,11 @@ def aug_2nd_specs(list):
     aug_2nds = [tri for tri in triplets if tri[1] == 3]
     return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
 
+
 def min_2nd_specs(list):
-    adjacent_intervals = zip(intervals(list), intervals(list)[1:])
-    return not any([interval[0] == 1] for interval in adjacent_intervals if interval[1] == 1)
+    adjacent_intervals = [i for i in zip(intervals(list), intervals(list)[1:])]
+    return not any([interval[0] == 1 for interval in adjacent_intervals if interval[1] == 1])
+
 
 def meets_specs(list):
     if not duplicates(list):
