@@ -104,15 +104,6 @@ class Scale():
         return Scale(self.root, self.notes)
 
 
-    def test(self):
-        """
-
-        :return:
-        """
-        assert not duplicates(self.notes)
-        assert not jumps(self.notes)
-
-
     def sharp(self, note_index):
         """
 
