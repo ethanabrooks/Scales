@@ -70,8 +70,9 @@ def aug_2nd_specs(list):
     aug_2nds = [tri for tri in triplets if tri[1] == 3]
     return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
 
-
-
+def min_2nd_specs(list):
+    adjacent_intervals = zip(intervals(list), intervals(list)[1:])
+    return not any([interval[0] == 1] for interval in adjacent_intervals if interval[1] == 1)
 
 def meets_specs(list):
     if not duplicates(list):
@@ -171,6 +172,8 @@ def test():
     assert aug_2nd_specs([0, 1, 4, 7, 8, 9]) == False
     assert aug_2nd_specs([0, 3, 4, 7, 8, 11]) == True
     assert aug_2nd_specs([0, 1, 4, 5, 8]) == False
+    assert min_2nd_specs([0, 1, 9, 10]) == True
+    assert min_2nd_specs([0, 1, 9, 10, 11]) == False
 
     print(next_scale.notes)
     print(next_scale.display_notes_flat())
