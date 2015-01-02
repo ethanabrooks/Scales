@@ -4,7 +4,8 @@ from tkinter import ttk
 
 
 def next_scale(*args):
-    current_scale = current_scale
+    current_scale = current_scale.g
+    return current_scale
 
 
 root = Tk()
@@ -21,7 +22,7 @@ meters = StringVar()
 ttk.Label(mainframe, textvariable=meters).grid(column=0, row=1, sticky=(W, E))
 ttk.Button(mainframe, text="Next Scale", command=next_scale).grid(column=0, row=0, sticky=W)
 
-ttk.Label(mainframe, text="Scale notes").grid(column=0, row=1, sticky=W)
+ttk.Label(mainframe, text="Scale notes").grid(column=0, row=1, sticky=N)
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
