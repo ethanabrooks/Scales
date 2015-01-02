@@ -2,7 +2,6 @@ from random import *
 import audioop
 
 
-
 __author__ = 'Ethan'
 
 notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
@@ -10,13 +9,18 @@ notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E
 notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
 # <= {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
 
-scale_types = {'hex': [0, 1, 4, 5, 8, 9],
-               'oct': [0, 1, 3, 4, 6, 7, 9, 10],
-               'wt': [0, 2, 4, 6, 8, 10],
-               'hmi': [0, 2, 3, 5, 7, 8, 11],
-               'hma': [0, 2, 4, 5, 7, 8, 11],
-               'ac': [0, 2, 4, 6, 7, 9, 10],
-               'dia': [0, 2, 4, 5, 7, 9, 11]}
+scale_types = {entry[0]: entry[1] for entry in
+               zip((
+                   [0, 2, 4, 5, 7, 9, 11],
+                   [0, 1, 4, 5, 8, 9],
+                   [0, 1, 3, 4, 6, 7, 9, 10],
+                   [0, 2, 4, 6, 8, 10],
+                   [0, 2, 3, 5, 7, 8, 11],
+                   [0, 2, 4, 5, 7, 8, 11],
+                   [0, 2, 4, 6, 7, 9, 10],
+                   [0, 2, 4, 5, 7, 9, 11]
+                   ),
+                   'oct wt hmi hma ac dia'.split())}
 
 
 def match(list1, list2):
@@ -37,7 +41,7 @@ def compare(list1, list2):
             not_in_list1.remove(integer)
         else:
             not_in_list2.append(integer)
-    return (not_in_list2, not_in_list1)
+    return not_in_list2, not_in_list1
 
 
 def duplicates(list):
@@ -154,8 +158,9 @@ def test():
         print(next_scale.notes)
         print(next_scale.display_notes_flat())
 
+
 test()
 
-# scale_list = list(scale_types.keys())
-# random_scale = Scale(random.randint(0, 11), random.choice(scale_list))
-# random_scale.get_next_scale()
+current_type = choice(scale_types)
+current_notes = [(note+randint(0, 12)) % 12 for note in current_type]
+current_scale = Scale(current_notes[0],current_notes)
