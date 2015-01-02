@@ -68,7 +68,7 @@ def jumps(list):
 
 
 def aug_2nd_specs(list):
-    triplets = trizip(intervals(list), intervals(list)[1:], intervals(list)[2:])
+    triplets = trizip(intervals(list[-1]+list), intervals(list)[1:], intervals(list)[2:]+list[0])
     aug_2nds = [tri for tri in triplets if tri[1] == 3]
     return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
 
@@ -164,17 +164,19 @@ def test():
     assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
     assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
     assert scale.display_notes_sharp() == "E F# G# A B C# D"
+    assert aug_2nd_specs([0, 1, 3, 4, 7, 8, 9]) == True
+    assert aug_2nd_specs([0, 1, 4, 7, 8, 9]) == False
+    assert aug_2nd_specs([0, 3, 4, 7, 8, 9]) == False
+    assert aug_2nd_specs([0, 3, 4, 7, 8, 10]) == False
+    assert aug_2nd_specs([0, 3, 4, 7, 8, 11]) == True
+    assert aug_2nd_specs([0, 1, 4, 5, 8]) == False
+    assert min_2nd_specs([0, 1, 9, 10]) == True
+    assert min_2nd_specs([0, 1, 9, 10, 11]) == False
     randlist = [randint for i in range(12)]
     assert match(randlist, randlist) == True
     assert match([0] + randlist, [1] + randlist) == False
     assert match(randlist + [0], randlist + [1]) == False
     next_scale = scale.get_next_scale()
-    assert aug_2nd_specs([0, 1, 3, 4, 7, 8, 9]) == True
-    assert aug_2nd_specs([0, 1, 4, 7, 8, 9]) == False
-    assert aug_2nd_specs([0, 3, 4, 7, 8, 11]) == True
-    assert aug_2nd_specs([0, 1, 4, 5, 8]) == False
-    assert min_2nd_specs([0, 1, 9, 10]) == True
-    assert min_2nd_specs([0, 1, 9, 10, 11]) == False
 
     print(next_scale.notes)
     print(next_scale.display_notes_flat())
