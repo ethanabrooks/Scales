@@ -150,25 +150,23 @@ class Scale():
 
 
 def test():
-    test_scale = Scale(root=7, notes=[0, 2, 4, 5, 7, 9, 11])
-    test_scales = [test_scale]
-    NUM_TO_ADD = 10
-    for num in range(NUM_TO_ADD):
-        scale = test_scales[-1].copy()
-        for rep in range(randint(0, 10)):
-            scale = scale.get_next_scale()
-        test_scales.append(scale)
-    for scale in test_scales:
-        assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
-        assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
-        assert scale.display_notes_sharp() == "E F# G# A B C# D"
-        randlist = [randint for i in range(12)]
-        assert match(randlist, randlist) == True
-        assert match([0] + randlist, [1] + randlist) == False
-        assert match(randlist + [0], randlist + [1]) == False
-        next_scale = scale.get_next_scale()
-        print(next_scale.notes)
-        print(next_scale.display_notes_flat())
+    scale = Scale(root=7, notes=[0, 2, 4, 5, 7, 9, 11])
+    # for scale in test_scales:
+    assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
+    assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
+    assert scale.display_notes_sharp() == "E F# G# A B C# D"
+    randlist = [randint for i in range(12)]
+    assert match(randlist, randlist) == True
+    assert match([0] + randlist, [1] + randlist) == False
+    assert match(randlist + [0], randlist + [1]) == False
+    next_scale = scale.get_next_scale()
+    assert aug_2nd_specs([0, 1, 3, 4, 7, 8, 9]) == True
+    assert aug_2nd_specs([0, 1, 4, 7, 8, 9]) == False
+    assert aug_2nd_specs([0, 3, 4, 7, 8, 11]) == True
+    assert aug_2nd_specs([0, 1, 4, 5, 8, 9]) == False
+
+    print(next_scale.notes)
+    print(next_scale.display_notes_flat())
 
 test()
 
