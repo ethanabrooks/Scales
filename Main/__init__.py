@@ -165,9 +165,4 @@ current_notes = [(note + randint(0, 12)) % 12 for note in current_type]
 current_scale = [Scale(current_notes[0], current_notes)]
 
 
-def next_scale():
-    current_scale.append(current_scale[0].get_next_scale())
-    del current_scale[0]
-    return current_scale[0]
-
 print((next_scale()).display_notes_flat())
