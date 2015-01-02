@@ -27,10 +27,12 @@ scale_namer = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split
 def match(list1, list2):
     return all([entry[0] == entry[1] for entry in zip(list1, list2)])
 
+
 def trizip(list1, list2, list3):
     if not (list1 and list2 and list3):
         return []
-    return [(list1[0], list2[0], list3[0])]+trizip(list1[1:], list2[1:], list3[1:])
+    return [(list1[0], list2[0], list3[0])] + trizip(list1[1:], list2[1:], list3[1:])
+
 
 def compare(list1, list2):
     """
@@ -54,17 +56,22 @@ def duplicates(list):
     return any([entry[0] == entry[1] for entry in adjacents]) or list[0] == list[-1]
 
 
-def jumps(list):
+def intervals(list):
     adjacents = zip(list, list[1:])
-    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [(list[0] - list[-1]) % 12]
-    return any([(entry[1] - entry[0]) % 12 > 3 for entry in adjacents]) or (list[0] - list[-1]) % 12 > 3
+    return [(entry[1] - entry[0]) % 12 for entry in adjacents] + [(list[0] - list[-1]) % 12]
+
+
+def jumps(list):
+    return any([interval > 3 for interval in intervals(list)])
+
 
 def aug_2nd_specs(list):
-    adjacents = zip(list, list[1:])
-    intervals = [(entry[1] - entry[0]) % 12 for entry in adjacents] + [(list[0] - list[-1]) % 12]
-    triplets = trizip(intervals, intervals[1:], intervals[2:])
+    triplets = trizip(intervals(list), intervals(list)[1:], intervals(list)[2:])
     aug_2nds = [tri for tri in triplets if tri[1] == 3]
     return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
+
+
+
 
 def meets_specs(list):
     if not duplicates(list):
@@ -131,7 +138,7 @@ class Scale():
             mod_scale = [note % 12 for note in modification(note_to_modify)]
             break
             # if meets_specs(mod_scale):
-            #     break
+            # break
             if mods:
                 mods.remove(modification)
             if not mods:
@@ -152,7 +159,6 @@ class Scale():
 
 def test():
     scale = Scale(root=7, notes=[0, 2, 4, 5, 7, 9, 11])
-    # for scale in test_scales:
     assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
     assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
     assert scale.display_notes_sharp() == "E F# G# A B C# D"
@@ -169,8 +175,8 @@ def test():
     print(next_scale.notes)
     print(next_scale.display_notes_flat())
 
-test()
 
+test()
 
 current_type = choice(named_scales)
 current_notes = [(note + randint(0, 12)) % 12 for note in current_type]
