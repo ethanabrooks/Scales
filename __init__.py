@@ -156,18 +156,21 @@ class Scale():
 
 
     def display_notes_sharp(self):
-        return ' '.join([notes_sharp[note] for note in self.notes])
+        return ' '.join([notes_sharp[note] for note in self.notes]+[notes_sharp[self.notes[0]]])
 
 
     def display_notes_flat(self):
-        return ' '.join([notes_flat[note] for note in self.notes])
+        return ' '.join([notes_flat[note] for note in self.notes]+[notes_flat[self.notes[0]]])
 
 
 def test():
-    scale = Scale(root=7, notes=[0, 2, 4, 5, 7, 9, 11])
-    assert scale.notes == [7, 9, 11, 0, 2, 4, 5]
-    assert scale.display_notes_flat() == "E Gb Ab A B Dd D"
-    assert scale.display_notes_sharp() == "E F# G# A B C# D"
+    scale1 = Scale(root=7, notes=[0, 2, 4, 5, 7, 9, 11])
+    scale2 = Scale(root=9, notes=[0, 2, 4, 5, 7, 9, 11])
+    assert scale1.notes == [7, 9, 11, 0, 2, 4, 5]
+    assert scale1.display_notes_flat() == "E Gb Ab A B Dd D E"
+    assert scale1.display_notes_flat() == "E Gb Ab A B Dd D E"
+    assert scale2.display_notes_sharp() == "F# G# A B C# D E F#"
+    assert scale2.display_notes_flat() == "Gb Ab A B Dd D E Gb"
     ints = intervals([0, 1, 3, 4, 7, 8, 9])
     assert aug_2nd_specs([0, 1, 3, 4, 7, 8, 9]) == True
     ints = intervals([0, 1, 4, 7, 8, 9])
@@ -190,7 +193,7 @@ def test():
     assert match(randlist, randlist) == True
     assert match([0] + randlist, [1] + randlist) == False
     assert match(randlist + [0], randlist + [1]) == False
-    next_scale = scale.get_next_scale()
+    next_scale = scale1.get_next_scale()
 
     print(next_scale.notes)
     print(next_scale.display_notes_flat())
