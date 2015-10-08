@@ -4,14 +4,11 @@ from itertools import cycle
 __author__ = 'Ethan'
 from random import *
 
-__author__ = 'Ethan'
-
 # {0: 'A', 1: 'Bb', 2: 'B', 3: 'C', 4: 'Dd', 5: 'D', 6: 'Eb', 7: 'E', 8: 'F', 9: 'Gb', 10: 'G', 11: 'Ab'}
-notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
+NOTES_FLAT = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
 # {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
-notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
-
-scales = (
+NOTES_SHARP = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
+SCALES = (
     [0, 2, 4, 5, 7, 9, 11],
     [0, 1, 4, 5, 8, 9],
     [0, 1, 3, 4, 6, 7, 9, 10],
@@ -23,57 +20,59 @@ scales = (
 )
 
 # index of scales and names
-name_notes = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split(), scales)}
-
+NAME_NOTES = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split(), SCALES)}
+NUM_NOTES = 12
+MAX_ITERS = 400
 
 def intervals(scale):
     """
     :param scale:
     :return: list of intervals, numbered by half steps
     """
-    scale = list(scale)
-    return [next - prev for next, prev in zip(wrapped_scale, scale)]
+    iter_scale = cycle(scale)
+    next(iter_scale)
+    return [(next - prev) % NUM_NOTES
+            for prev, next in zip(scale, iter_scale)]
 
 
-def jumps(scale):
+def jumps(intervals):
     """
     :param scale:
     :return: True if all intervals less than minor third
     """
-    return any([interval > 3 for interval in intervals(scale)])
+    return any([interval > 3 for interval in intervals])
 
 
-def aug_2nd_specs(scale):
+def aug_2nd_specs(intervals):
     """
     :param scale:
     :return: True if all minor thirds have a half step on left and right
     """
-    intervals_ = intervals(scale)
-    for i, interval in enumerate(intervals_):
+    for i, interval in enumerate(intervals):
         if interval == 3:
-            next_index = i + 1 % len(scale)
-            if intervals_[i - 1] != 1 \
-                    or intervals_[next_index] != 1:
+            prev, next = (intervals[j % len(intervals)]
+                          for j in (i-1, i+1))
+            if prev != 1 or next != 1:
                 return False
     return True
 
 
-def min_2nd_specs(scale):
+def min_2nd_specs(intervals):
     """
     :param scale:
     :return: True if no adjacent half steps
     """
-    intervals_ = intervals(scale)
-    for i, interval in enumerate(intervals_):
-        if intervals_[i - 1] == 1 and interval == 1:
+    for i, interval in enumerate(intervals):
+        if intervals[i - 1] == 1 and interval == 1:
             return False
     return True
 
 
 def meets_specs(scale):
-    if not jumps(scale):
-        if aug_2nd_specs(scale):
-            if min_2nd_specs(scale):
+    intervals_ = intervals(scale)
+    if not jumps(intervals_):
+        if aug_2nd_specs(intervals_):
+            if min_2nd_specs(intervals_):
                 return True
     return False
 
@@ -100,30 +99,36 @@ def merge(scale, note):
 
 
 def fix_up(scale):
-    scale.sort()
+    scale = [note % NUM_NOTES for note in scale]
     root = randrange(len(scale))
     return scale[root:] + scale[:root]
 
+def try_mods(mods, scale):
+    note_to_modify = choice(range(len(scale)))
+    for modification in mods:
+        scale_copy = copy(scale)
+        new_scale = set(modification(scale_copy, note_to_modify))
+        if meets_specs(new_scale):
+            return new_scale
 
 def get_next_scale(scale):
     mods = [sharp, flat, split, merge]
     shuffle(mods)
-    while True:
-        note_to_modify = choice(range(len(scale)))
-        for modification in mods:
-            scale_copy = copy(scale)
-            new_scale = set(modification(scale_copy, note_to_modify))
-            if meets_specs(new_scale):
-                break
+    for _ in range(MAX_ITERS):
+        new_scale = try_mods(mods, scale)
+        if new_scale is not None:
+            break
+    if new_scale is None:
+        return choice(SCALES)
     return fix_up(new_scale)
 
 
 def display_notes_sharp(scale):
-    return ' '.join(notes_sharp[note] for note in scale)
+    return ' '.join(NOTES_SHARP[note] for note in scale)
 
 
 def display_notes_flat(scale):
-    return ' '.join(notes_sharp[note] for note in scale)
+    return ' '.join(NOTES_SHARP[note] for note in scale)
 
 
 def valid_display_type():
@@ -154,21 +159,18 @@ def display_validation(user_input):
     else:
         raise ValueError
 
-NUM_NOTES = 12
-len_1st_scale = 8 # get_valid_input(
-#     'How many notes would you like in your first scale: ',
-#     int,
-#     'Please enter a number: ',
-#     ValueError
-# )
-display = display_notes_flat # get_valid_input(
-#     'Display notes in sharp or flat (type [s|f]: ',
-#     display_validation,
-#     'Please enter either "s" or "f": ',
-#     ValueError
-# )
-scale = fix_up(sample(range(NUM_NOTES), len_1st_scale))
-while True:
-    print(display(scale))
-    # input('Press Enter for next scale...')
-    scale = get_next_scale(scale)
+def run():
+    display = display_notes_flat # get_valid_input(
+    #     'Display notes in sharp or flat (type [s|f]: ',
+    #     display_validation,
+    #     'Please enter either "s" or "f": ',
+    #     ValueError
+    # )
+    scale = choice(SCALES)
+    while True:
+        assert meets_specs(scale)
+        print(display(scale))
+        # input('Press Enter for next scale...')
+        scale = get_next_scale(scale)
+
+run()
