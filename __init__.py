@@ -24,6 +24,7 @@ NAME_NOTES = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split(
 NUM_NOTES = 12
 MAX_ITERS = 400
 
+
 def intervals(scale):
     """
     :param scale:
@@ -51,7 +52,7 @@ def aug_2nd_specs(intervals):
     for i, interval in enumerate(intervals):
         if interval == 3:
             prev, next = (intervals[j % len(intervals)]
-                          for j in (i-1, i+1))
+                          for j in (i - 1, i + 1))
             if prev != 1 or next != 1:
                 return False
     return True
@@ -103,6 +104,7 @@ def fix_up(scale):
     root = randrange(len(scale))
     return scale[root:] + scale[:root]
 
+
 def try_mods(mods, scale):
     note_to_modify = choice(range(len(scale)))
     for modification in mods:
@@ -110,6 +112,7 @@ def try_mods(mods, scale):
         new_scale = set(modification(scale_copy, note_to_modify))
         if meets_specs(new_scale):
             return new_scale
+
 
 def get_next_scale(scale):
     mods = [sharp, flat, split, merge]
@@ -151,6 +154,7 @@ def get_valid_input(prompt, validation, prompt_on_fail=None, exception=Exception
         except exception:
             print(prompt_on_fail, end="")
 
+
 def display_validation(user_input):
     if user_input == 's':
         return display_notes_sharp
@@ -159,18 +163,20 @@ def display_validation(user_input):
     else:
         raise ValueError
 
+
 def run():
-    display = display_notes_flat # get_valid_input(
-    #     'Display notes in sharp or flat (type [s|f]: ',
-    #     display_validation,
-    #     'Please enter either "s" or "f": ',
-    #     ValueError
-    # )
+    display = get_valid_input(
+        'Display notes in sharp or flat (type [s|f]: ',
+        display_validation,
+        'Please enter either "s" or "f": ',
+        ValueError
+    )
     scale = choice(SCALES)
     while True:
         assert meets_specs(scale)
         print(display(scale))
         # input('Press Enter for next scale...')
         scale = get_next_scale(scale)
+
 
 run()
