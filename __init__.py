@@ -1,15 +1,12 @@
 __author__ = 'Ethan'
 from random import *
-from tkinter import *
-from tkinter import ttk
 
 __author__ = 'Ethan'
 
+# {0: 'A', 1: 'Bb', 2: 'B', 3: 'C', 4: 'Dd', 5: 'D', 6: 'Eb', 7: 'E', 8: 'F', 9: 'Gb', 10: 'G', 11: 'Ab'}
 notes_flat = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
-# <= {0: 'A', 1: 'Bb', 2: 'B', 3: 'C', 4: 'Dd', 5: 'D', 6: 'Eb', 7: 'E', 8: 'F', 9: 'Gb', 10: 'G', 11: 'Ab'}
+# {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
 notes_sharp = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
-# <= {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
-
 
 named_scales = (
     [0, 2, 4, 5, 7, 9, 11],
@@ -22,65 +19,50 @@ named_scales = (
     [0, 2, 4, 5, 7, 9, 11]
 )
 
+# index of scales and names
 scale_namer = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split(), named_scales)}
 
 
-def match(list1, list2):
-    return all([entry[0] == entry[1] for entry in zip(list1, list2)])
+def intervals(scale):
+    '''
+    :param scale:
+    :return: list of intervals, numbered by half steps
+    '''
+    return [next - prev for next, prev in zip(scale[1:], scale[:-2])]
 
 
-def trizip(list1, list2, list3):
-    if not (list1 and list2 and list3):
-        return []
-    return [(list1[0], list2[0], list3[0])] + trizip(list1[1:], list2[1:], list3[1:])
-
-
-def compare(list1, list2):
+def jumps(scale):
     """
-    Identifies integers in one list that are not in the other and vice versa.
-    :param list1: [integers] -- probably notes
-    :param list2: [integers] -- probably notes
-    :return: 2-tuple of lists of numbers that list1 possesses that list2 does not possess and vice versa, respectively.
+    :param scale:
+    :return: True if all intervals less than minor third
     """
-    not_in_list1 = list2
-    not_in_list2 = []
-    for integer in list1:
-        if integer in list2:
-            not_in_list1.remove(integer)
-        else:
-            not_in_list2.append(integer)
-    return not_in_list2, not_in_list1
+    return any([interval > 3 for interval in intervals(scale)])
 
 
-def remove_duplicates(list):
-    one_each = []
-    for entry in list:
-        if entry not in one_each:
-            one_each.append(entry)
-    return one_each
+
+def aug_2nd_specs(scale):
+    """
+    :param scale:
+    :return: True if all minor thirds have a half step on left and right
+    """
+    intervals_ = intervals(scale)
+    for i, interval in enumerate(intervals_):
+        if interval == 3:
+            if intervals_[i - 1] != 1 or intervals_[i + 1] != 1:
+                return False
+    return True
 
 
-def intervals(list):
-    adjacents = zip(list, list[1:])
-    return [(entry[1] - entry[0]) % 12 for entry in adjacents] + [(list[0] - list[-1]) % 12]
-
-
-def jumps(list):
-    return any([interval > 3 for interval in intervals(list)])
-
-
-def aug_2nd_specs(list):
-    ints = intervals(list)
-    triplets = trizip([ints[-1]]+ints, ints, ints[1:]+[ints[0]])
-    aug_2nds = [tri for tri in triplets if tri[1] == 3]
-    return all([tri[0] == 1 and tri[2] == 1 for tri in aug_2nds])
-
-
-def min_2nd_specs(list):
-    ints = intervals(list)
-    adjacent_intervals = [i for i in zip(ints, ints[1:]+[ints[0]])]
-    return all(entry != (1, 1) for entry in adjacent_intervals)
-
+def min_2nd_specs(scale):
+    """
+    :param scale:
+    :return:
+    """
+    intervals_ = intervals(scale)
+    for i, interval in enumerate(intervals_):
+        if interval == 1 and intervals_[i + 1] == 1:
+            return False
+    return True
 
 def meets_specs(list):
     if not jumps(list):
@@ -156,11 +138,11 @@ class Scale():
 
 
     def display_notes_sharp(self):
-        return ' '.join([notes_sharp[note] for note in self.notes]+[notes_sharp[self.notes[0]]])
+        return ' '.join([notes_sharp[note] for note in self.notes] + [notes_sharp[self.notes[0]]])
 
 
     def display_notes_flat(self):
-        return ' '.join([notes_flat[note] for note in self.notes]+[notes_flat[self.notes[0]]])
+        return ' '.join([notes_flat[note] for note in self.notes] + [notes_flat[self.notes[0]]])
 
 
 def test():
@@ -212,7 +194,10 @@ def initialize():
 
 
 current_scale = initialize()
-current_scale[0].get_next_scale()
+while True:
+    pause = input('Press Enter for next scale...')
+    current_scale[0].get_next_scale()
+
 
 def next_scale(*args):
     current_scale.append(current_scale[0].get_next_scale())
@@ -223,29 +208,29 @@ def next_scale(*args):
     ints.set('  '.join(string_ints))
 
 
-root = Tk()
-root.title("Feet to Meters")
+# root = Tk()
+# root.title("Feet to Meters")
 
-mainframe = ttk.Frame(root, padding="3 3 12 12")
-mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-mainframe.columnconfigure(0, weight=1)
-mainframe.rowconfigure(0, weight=1)
+# mainframe = ttk.Frame(root, padding="3 3 12 12")
+# mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+# mainframe.columnconfigure(0, weight=1)
+# mainframe.rowconfigure(0, weight=1)
 
-scale_flat = StringVar()
-scale_sharp = StringVar()
-ints = StringVar()
+# scale_flat = StringVar()
+# scale_sharp = StringVar()
+# ints = StringVar()
 
-ttk.Button(mainframe, text="Next Scale", command=next_scale).grid(column=0, row=0, sticky=W)
-ttk.Label(mainframe, textvariable=scale_flat).grid(column=0, row=1, sticky=(W, E))
-ttk.Label(mainframe, textvariable=scale_sharp).grid(column=0, row=2, sticky=(W, E))
-ttk.Label(mainframe, text="Intervals:").grid(column=0, row=3, sticky=(W))
-ttk.Label(mainframe, textvariable=ints).grid(column=0, row=4, sticky=(W, E))
+# ttk.Button(mainframe, text="Next Scale", command=next_scale).grid(column=0, row=0, sticky=W)
+# ttk.Label(mainframe, textvariable=scale_flat).grid(column=0, row=1, sticky=(W, E))
+# ttk.Label(mainframe, textvariable=scale_sharp).grid(column=0, row=2, sticky=(W, E))
+# ttk.Label(mainframe, text="Intervals:").grid(column=0, row=3, sticky=(W))
+# ttk.Label(mainframe, textvariable=ints).grid(column=0, row=4, sticky=(W, E))
 
 
-for child in mainframe.winfo_children():
-    child.grid_configure(padx=5, pady=5)
+# for child in mainframe.winfo_children():
+# child.grid_configure(padx=5, pady=5)
 
-root.bind('<Return>', next_scale)
+# root.bind('<Return>', next_scale)
 
-root.mainloop()
+# root.mainloop()
 
