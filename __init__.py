@@ -4,10 +4,20 @@ from itertools import cycle
 __author__ = 'Ethan'
 from random import *
 
+
+def contruct_dict(keys, vals):
+    return {key: val for key, val in zip(keys, vals)}
+
+
+def get_notes(string):
+    return contruct_dict(range(12), string.split())
+
 # {0: 'A', 1: 'Bb', 2: 'B', 3: 'C', 4: 'Dd', 5: 'D', 6: 'Eb', 7: 'E', 8: 'F', 9: 'Gb', 10: 'G', 11: 'Ab'}
-NOTES_FLAT = {entry[0]: entry[1] for entry in zip(range(12), "A Bb B C Dd D Eb E F Gb G Ab".split())}
+NOTES_FLAT = get_notes('A Bb B C Db D Eb E F Gb G Ab'.replace('b', u"\u266D"))
+
 # {0: 'A', 1: 'A#', 2: 'B', 3: 'C', 4: 'C#', 5: 'D', 6: 'D#', 7: 'E', 8: 'F', 9: 'F#', 10: 'G', 11: 'G#'}
-NOTES_SHARP = {entry[0]: entry[1] for entry in zip(range(12), "A A# B C C# D D# E F F# G G#".split())}
+NOTES_SHARP = get_notes('A A# B C C# D D# E F F# G G#'.replace('#', u"\u266F"))
+
 SCALES = (
     [0, 2, 4, 5, 7, 9, 11],
     [0, 1, 4, 5, 8, 9],
@@ -20,8 +30,11 @@ SCALES = (
 )
 
 # index of scales and names
-NAME_NOTES = {entry[0]: entry[1] for entry in zip('oct wt hmi hma ac dia'.split(), SCALES)}
-NUM_NOTES = 12
+NAME_NOTES = contruct_dict('oct wt hmi hma ac dia'.split(), SCALES)
+
+TOTAL_NUM_NOTES = 12
+
+# number of times get_next_scale iterates before randomly choosing a new scale from SCALES
 MAX_ITERS = 400
 
 
@@ -32,7 +45,7 @@ def intervals(scale):
     """
     iter_scale = cycle(scale)
     next(iter_scale)
-    return [(next - prev) % NUM_NOTES
+    return [(next - prev) % TOTAL_NUM_NOTES
             for prev, next in zip(scale, iter_scale)]
 
 
@@ -100,7 +113,7 @@ def merge(scale, note):
 
 
 def fix_up(scale):
-    scale = [note % NUM_NOTES for note in scale]
+    scale = [note % TOTAL_NUM_NOTES for note in scale]
     root = randrange(len(scale))
     return scale[root:] + scale[:root]
 
@@ -131,7 +144,7 @@ def display_notes_sharp(scale):
 
 
 def display_notes_flat(scale):
-    return ' '.join(NOTES_SHARP[note] for note in scale)
+    return ' '.join(NOTES_FLAT[note] for note in scale)
 
 
 def valid_display_type():
@@ -175,7 +188,7 @@ def run():
     while True:
         assert meets_specs(scale)
         print(display(scale))
-        # input('Press Enter for next scale...')
+        input('Press Enter for next scale...')
         scale = get_next_scale(scale)
 
 
